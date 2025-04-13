@@ -1,0 +1,26 @@
+{
+    "accounts": [
+        {
+            "login": "n.luntsev@yandex.ru",
+            "password": "*Gsj*Lx1KT#X",
+            "url": "https://yandex.ru",
+            "createDate": "2025-04-13T21:48:05.7790424+03:00",
+            "updateDate": "2025-04-13T21:48:05.7790424+03:00"
+        },
+        {
+            "login": "luntsev@gmail.com",
+            "password": "k6VPdPtv-Lb2",
+            "url": "http://google.com",
+            "createDate": "2025-04-13T21:48:37.1725555+03:00",
+            "updateDate": "2025-04-13T21:48:37.1725555+03:00"
+        },
+        {
+            "login": "gleb@yandex.ru",
+            "password": "123",
+            "url": "https://steam.com",
+            "createDate": "2025-04-13T21:54:06.5151869+03:00",
+            "updateDate": "2025-04-13T21:54:06.5151869+03:00"
+        }
+    ],
+    "updateAt": "2025-04-14T00:02:06.7933076+03:00"
+}
