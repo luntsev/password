@@ -11,57 +11,65 @@ type Vault struct {
 	UpdateAt time.Time `json:"updateAt"`
 }
 
-func (v *Vault) loadDate(fileName string) error {
-	byteBuf, err := files.ReadFile(fileName)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(byteBuf, v)
-	return err
-}
-
-func (v *Vault) saveData(fileName string) error {
-	byteBuf, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	err = files.WriteFile(byteBuf, fileName)
-	return err
-}
-
-func (v *Vault) AddAccount(acc *Account, fileName string) error {
+func (v *VaultDB) AddAccount(acc *Account, fileName string) error {
 	v.Accounts = append(v.Accounts, *acc)
 	v.UpdateAt = time.Now()
-	return v.saveData(fileName)
+	return v.saveData()
 }
 
-func (vault *Vault) DelAccount(url, fileName string) (int, error) {
+func (v *VaultDB) DelAccount(url, fileName string) (int, error) {
 	count := 0
-	var newVault Vault
-	for _, account := range vault.Accounts {
+	var newAccounts []Account
+	for _, account := range v.Vault.Accounts {
 		if account.Url != url {
-			newVault.Accounts = append(newVault.Accounts, account)
+			newAccounts = append(newAccounts, account)
 		} else {
 			count++
 		}
 	}
-	newVault.UpdateAt = time.Now()
 	if count != 0 {
-		vault = &newVault
+		v.Vault.Accounts = newAccounts
+		v.Vault.UpdateAt = time.Now()
 	}
-	err := vault.saveData(fileName)
+	err := v.saveData()
 	return count, err
 }
 
-func NewVault(fileName string) (*Vault, error) {
-	newVault := Vault{
-		Accounts: []Account{},
-		UpdateAt: time.Now(),
+type VaultDB struct {
+	Vault
+	db files.JsonDB
+}
+
+func (v *VaultDB) loadDate() error {
+	byteBuf, err := v.db.Read()
+	if err != nil {
+		return err
 	}
 
-	err := newVault.loadDate(fileName)
+	err = json.Unmarshal(byteBuf, &v.Vault)
+	return err
+}
+
+func (v *VaultDB) saveData() error {
+	byteBuf, err := json.Marshal(v.Vault)
+	if err != nil {
+		return err
+	}
+
+	err = v.db.Write(byteBuf)
+	return err
+}
+
+func NewVault(db files.JsonDB) (*VaultDB, error) {
+	newVault := VaultDB{
+		Vault: Vault{
+			Accounts: []Account{},
+			UpdateAt: time.Now(),
+		},
+		db: db,
+	}
+
+	err := newVault.loadDate()
 	if err != nil {
 		return &newVault, err
 	}

@@ -3,15 +3,16 @@ package main
 import (
 	"fmt"
 	"password/account"
+	"password/files"
 	"strings"
 
 	"github.com/fatih/color"
 )
 
-var vault *account.Vault
+var vault *account.VaultDB
 
 func main() {
-	vault, err := account.NewVault("accounts.json")
+	vault, err := account.NewVault(*files.NewJsonDB("accounts.json"))
 	if err != nil {
 		color.Red(err.Error())
 	}
@@ -52,7 +53,7 @@ func getMenu() string {
 	return promtData("Выберите действие")
 }
 
-func createAccount(vault *account.Vault) error {
+func createAccount(vault *account.VaultDB) error {
 	login := promtData("Введите логин (email)")
 	password := promtData("Введите пароль (если не задан система сгенерирует свой)")
 	url := promtData("Введите URL ресурса")
@@ -64,7 +65,7 @@ func createAccount(vault *account.Vault) error {
 	return err
 }
 
-func findAccount(vault *account.Vault) {
+func findAccount(vault *account.VaultDB) {
 	url := promtData("Введите URL искомого ресурса")
 	isFinded := false
 	for _, account := range vault.Accounts {
@@ -79,7 +80,7 @@ func findAccount(vault *account.Vault) {
 	fmt.Println()
 }
 
-func deleteAccount(vault *account.Vault, fileName string) {
+func deleteAccount(vault *account.VaultDB, fileName string) {
 	url := promtData("Введите URL удаления")
 	delCount, err := vault.DelAccount(url, fileName)
 	if err == nil {

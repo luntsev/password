@@ -2,16 +2,20 @@ package files
 
 import "os"
 
-func ReadFile(name string) ([]byte, error) {
-	file, err := os.ReadFile(name)
+type JsonDB struct {
+	fileName string
+}
+
+func (db *JsonDB) Read() ([]byte, error) {
+	file, err := os.ReadFile(db.fileName)
 	if err != nil {
 		return nil, err
 	}
 	return file, nil
 }
 
-func WriteFile(content []byte, name string) error {
-	file, err := os.Create(name)
+func (db *JsonDB) Write(content []byte) error {
+	file, err := os.Create(db.fileName)
 	if err != nil {
 		return err
 	}
@@ -22,4 +26,8 @@ func WriteFile(content []byte, name string) error {
 	}
 
 	return nil
+}
+
+func NewJsonDB(fileName string) *JsonDB {
+	return &JsonDB{fileName: fileName}
 }
