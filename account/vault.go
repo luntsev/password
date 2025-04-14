@@ -15,13 +15,13 @@ type Vault struct {
 	UpdateAt time.Time `json:"updateAt"`
 }
 
-func (v *VaultDB) AddAccount(acc *Account, fileName string) error {
+func (v *VaultDB) AddAccount(acc *Account) error {
 	v.Accounts = append(v.Accounts, *acc)
 	v.UpdateAt = time.Now()
 	return v.saveData()
 }
 
-func (v *VaultDB) DelAccount(url, fileName string) (int, error) {
+func (v *VaultDB) DelAccount(url string) (int, error) {
 	count := 0
 	var newAccounts []Account
 	for _, account := range v.Vault.Accounts {
