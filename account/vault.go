@@ -2,9 +2,13 @@ package account
 
 import (
 	"encoding/json"
-	"password/files"
 	"time"
 )
+
+type DataBase interface {
+	Read() ([]byte, error)
+	Write([]byte) error
+}
 
 type Vault struct {
 	Accounts []Account `json:"accounts"`
@@ -37,7 +41,7 @@ func (v *VaultDB) DelAccount(url, fileName string) (int, error) {
 
 type VaultDB struct {
 	Vault
-	db files.JsonDB
+	db DataBase
 }
 
 func (v *VaultDB) loadDate() error {
@@ -60,7 +64,7 @@ func (v *VaultDB) saveData() error {
 	return err
 }
 
-func NewVault(db files.JsonDB) (*VaultDB, error) {
+func NewVault(db DataBase) (*VaultDB, error) {
 	newVault := VaultDB{
 		Vault: Vault{
 			Accounts: []Account{},
