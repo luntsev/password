@@ -1,0 +1,4 @@
+accounts.json
+/.env*
+.vscode
+/*.vault

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math/rand/v2"
 	"net/url"
+	"password/output"
 	"regexp"
 	"time"
 )
@@ -39,10 +40,13 @@ func (acc *Account) GetUpdateDate() time.Time {
 func NewAccount(accLogin, accPassword, accUrl string) (*Account, error) {
 	emailRe := regexp.MustCompile(`[A-z0-9-_]+@[A-z0-9-_]+\.[A-z]+`)
 	if !emailRe.MatchString(accLogin) {
+		err := errors.New("invalid login")
+		output.PrintError(err, "Введен некорректный логин")
 		return nil, errors.New("invalid login")
 	}
 	_, err := url.ParseRequestURI(accUrl)
 	if err != nil {
+		output.PrintError(err, "Введен некорректный URL")
 		return nil, err
 	}
 
