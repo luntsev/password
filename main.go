@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/joho/godotenv"
 	"password/account"
 	"password/encrypter"
 	"password/files"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 var menu = map[string]func(*account.VaultDB){
@@ -65,11 +66,11 @@ func createAccount(vault *account.VaultDB) {
 }
 
 func findAccount(vault *account.VaultDB) {
-	choise := promtData([]string{
-		"По какому полю искать:",
-		"1. По URL",
-		"2. По login",
-	})
+	choise := promtData(
+		"1. Поиск по полю URL",
+		"2. Поиск по полю login",
+		"По какому полю искать",
+	)
 	var accounts []account.Account
 	switch choise {
 	case "1":

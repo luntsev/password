@@ -4,7 +4,10 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"errors"
+	"fmt"
 	"io"
+	rnd "math/rand/v2"
 	"os"
 	"password/output"
 )
@@ -59,10 +62,37 @@ func (enc *Encrypter) Decrypt(encryptedStr []byte) []byte {
 	return plaintStr
 }
 
+func (enc *Encrypter) generateKey() (string, error) {
+	var validChar = []rune("1234567890abcdef")
+	key := make([]rune, 32)
+	for i := range key {
+		key[i] = validChar[rnd.IntN(16)]
+	}
+	enc.Key = string(key)
+
+	file, err := os.Create(".env")
+	if err != nil {
+		output.PrintError(err, "Не удалось создать файл .env")
+		return "", err
+	}
+
+	content := []byte(fmt.Sprintf("KEY=%s", enc.Key))
+	_, err = file.Write(content)
+	if err != nil {
+		output.PrintError(err, "Не удалось записать в файл .env")
+		return "", err
+	}
+	return enc.Key, nil
+}
+
 func NewEncrypter() *Encrypter {
+	enc := &Encrypter{}
 	key := os.Getenv("KEY")
 	if key == "" {
-		panic("В переменных окружения не задан ключ шифрования")
+		err := errors.New("no \"KEY\" in environment variables")
+		output.PrintError(err, "В переменных окружения нет ключа шифрования")
+		key, _ = enc.generateKey()
 	}
-	return &Encrypter{Key: key}
+	enc.Key = key
+	return enc
 }
