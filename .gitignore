@@ -1,4 +1,4 @@
-accounts.json
+/accounts.json
 /.env*
 .vscode
 /*.vault
